@@ -24,12 +24,26 @@ namespace HouseRentingSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Become(BecomeAgentFormModel model)
         {
+            var userId = User.Id();
             var isExist = _agents.ExistsById(User.Id()); //мислих го 5 часа, не знам защо не ставаше, да започня конструкцията
             if (await isExist)
             {
                 return BadRequest();
             }
-           return View();
+            if (await _agents.UserWithPhoneNumberExists(model.PhoneNumber))
+            {
+                ModelState.AddModelError(nameof(model.PhoneNumber), "Phone number already exist. Enter another one.");
+            }
+            if (await _agents.UserHasRents(userId))
+            {
+                ModelState.AddModelError("Error", "You should have no rents to become an agent!");
+
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            return RedirectToAction(nameof(HouseController.All), "House");
         }
     }
 }
