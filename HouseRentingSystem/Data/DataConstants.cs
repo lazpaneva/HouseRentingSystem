@@ -26,5 +26,9 @@ namespace HouseRentingSystem.Data
         public const int AgentPhoneMaxLength = 15;
 
         public const int AgentPhoneMinLength = 7;
+
+        public const string RequiredMessage = "The {0} field is required";
+
+        public const string LengthMessage = "The field {0} must be between {2} and {1} characters long";
     }
 }

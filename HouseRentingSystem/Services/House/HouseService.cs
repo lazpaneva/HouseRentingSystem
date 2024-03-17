@@ -6,6 +6,7 @@ using System.Linq;
 
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using HouseRentingSystem.Services.House.Models;
 
 namespace HouseRentingSystem.Services.House
 {
@@ -16,6 +17,18 @@ namespace HouseRentingSystem.Services.House
         {
                 _data = data;
         }
+
+        public async Task<IEnumerable<HouseCategoryServiceModel>> AllCategories()
+        {
+            return await _data.Categories
+                .Select(c => new HouseCategoryServiceModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                })
+                .ToListAsync();
+        }
+
         public Task<List<HouseIndexServiceModel>> LastThreeHouses()
         {
 
