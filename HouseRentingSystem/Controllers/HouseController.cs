@@ -20,7 +20,33 @@ namespace HouseRentingSystem.Controllers
                 _houses = houses;
                 _agents = agent;
         }
-        
+
+        [HttpGet]
+        public async Task<IActionResult> All([FromQuery] AllHousesQueryModel query)
+        {
+            var queryResult = _houses.All(
+                query.Category,
+                query.SearchTerm,
+                query.Sorting,
+                query.CurrentPage,
+                AllHousesQueryModel.HousesPerPage
+                );
+
+            query.TotalHouseCount = queryResult.TotalHouseCount;
+            query.Houses = queryResult.Houses;
+
+            var houseCategories = _houses.AllCategoriesName();
+            query.Categories = (IEnumerable<String>)houseCategories;
+
+            return View(query);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> All(HouseFormModel model)
+        {
+            return RedirectToAction(nameof(Details), new { id = "1" });
+        }
+
 
         [AllowAnonymous]
         public async Task<IActionResult> Add()
@@ -65,18 +91,6 @@ namespace HouseRentingSystem.Controllers
         public async Task<IActionResult> Details(int id)
         {
             return View(new HouseDetailsViewModel());
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> All()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> All(HouseFormModel model)
-        {
-            return RedirectToAction(nameof(Details), new {id = "1" });
         }
 
         [HttpGet]

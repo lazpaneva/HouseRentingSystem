@@ -1,4 +1,4 @@
-﻿namespace HouseRentingSystem.Services.Model
+﻿namespace HouseRentingSystem.Models.Houses
 {
     public class HouseIndexServiceModel
     {
