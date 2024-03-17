@@ -1,4 +1,6 @@
-﻿using HouseRentingSystem.Contract.House;
+﻿using HouseRentingSystem.Contract.Agent;
+using HouseRentingSystem.Contract.House;
+using HouseRentingSystem.Infrastructure;
 using HouseRentingSystem.Models.Houses;
 using HouseRentingSystem.Services.House;
 using Microsoft.AspNetCore.Authorization;
@@ -12,14 +14,49 @@ namespace HouseRentingSystem.Controllers
     {
 
         private readonly IHouseService _houses;
-        public HouseController(HouseService houses)
+        private readonly IAgentService _agents;
+        public HouseController(IHouseService houses, IAgentService agent)
         {
                 _houses = houses;
+                _agents = agent;
         }
+        
+
         [AllowAnonymous]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> Add()
         {
-            return View(new AllHousesQueryModel());
+            if (await _agents.ExistsById(User.Id()) == false)
+            {
+                return RedirectToAction(nameof(AgentController.Become), "Agent");
+            };
+            return View(new HouseFormModel
+            {
+                Categories = await _houses.AllCategories()
+            });
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> Add(HouseFormModel model)
+        {
+            if (await _agents.ExistsById(User.Id()) == false)
+            {
+                return RedirectToAction(nameof(AgentController.Become), "Agent");
+            };
+            if (await _houses.CategoryExists(model.CategoryId) == false)
+            {
+                ModelState.AddModelError(nameof(model.CategoryId), "Категорията не съществува");
+            }
+            if (!ModelState.IsValid)
+            {
+                model.Categories = await _houses.AllCategories();
+                return View(model);
+            }
+            var agentId = await _agents.GetAgentId(User.Id());
+            var newHouseId = await _houses.Create(model.Title, model.Address, model.Description,
+                    model.ImageUrl, model.PricePerMonth, model.CategoryId, agentId);
+
+            return RedirectToAction(nameof(Details), new {Id = newHouseId});
+
         }
         public async Task<IActionResult> Mine()
         {
@@ -31,13 +68,13 @@ namespace HouseRentingSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Add()
+        public async Task<IActionResult> All()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(HouseFormModel model)
+        public async Task<IActionResult> All(HouseFormModel model)
         {
             return RedirectToAction(nameof(Details), new {id = "1" });
         }

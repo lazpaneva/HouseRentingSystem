@@ -29,6 +29,31 @@ namespace HouseRentingSystem.Services.House
                 .ToListAsync();
         }
 
+        public async Task<bool> CategoryExists(int categoryId)
+        {
+            return await _data.Categories.AnyAsync(c => c.Id == categoryId);
+        }
+
+        public async Task<int> Create(string title, string address, string description, string imageUrl, 
+            decimal price, int categoriId, int agentId)
+        {
+            var house = new HouseRentingSystem.Data.Models.House()
+            {
+                Title = title,
+                Address = address,
+                Description = description,
+                ImageUrl = imageUrl,
+                PricePerMonth = price,
+                CategoryId = categoriId,
+                AgentId = agentId
+            };
+
+            await _data.Houses.AddAsync(house);
+            await _data.SaveChangesAsync();
+
+            return house.Id; //!!!!!ID на новата къща се връща
+        }
+
         public Task<List<HouseIndexServiceModel>> LastThreeHouses()
         {
 

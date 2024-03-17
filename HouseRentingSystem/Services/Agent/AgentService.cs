@@ -38,8 +38,14 @@ namespace HouseRentingSystem.Services.Agent
                 UserId = userId,
                 PhoneNumber = phoneNumber
             };
-            await _data.AddAsync(agent);
+
+            await _data.Age.AddAsync(agent);
             await _data.SaveChangesAsync();
+        }
+
+        public async Task<int> GetAgentId(string userId)
+        {
+            return _data.Age.FirstOrDefaultAsync(a => a.UserId == userId).Id;    
         }
     }
 }

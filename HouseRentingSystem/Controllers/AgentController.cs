@@ -17,9 +17,7 @@ namespace HouseRentingSystem.Controllers
         [HttpGet]
         public IActionResult Become()
         {
-            var model = new BecomeAgentFormModel();
-
-            return View(model);
+            return View();
         }
         [HttpPost]
         public async Task<IActionResult> Become(BecomeAgentFormModel model)
@@ -43,7 +41,9 @@ namespace HouseRentingSystem.Controllers
             {
                 return View(model);
             }
-            return RedirectToAction(nameof(HouseController.All), "House");
+            await _agents.Create(userId, model.PhoneNumber);
+
+            return RedirectToAction("All", "House");
         }
     }
 }
