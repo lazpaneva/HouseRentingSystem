@@ -15,7 +15,7 @@ namespace HouseRentingSystem.Models.Houses
         public int CurrentPage { get; init; } = 1;
         public int TotalHouseCount { get; set; }
 
-        public IEnumerable<string> Categories { get; set; } = null!;
+        public IEnumerable<string> Categories { get; set; } = new List<string>();
 
         public IEnumerable<HouseServiceModel> Houses { get; set; }
             = new List<HouseServiceModel>();

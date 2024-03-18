@@ -35,8 +35,8 @@ namespace HouseRentingSystem.Controllers
             query.TotalHouseCount = queryResult.TotalHouseCount;
             query.Houses = queryResult.Houses;
 
-            var houseCategories = _houses.AllCategoriesName();
-            query.Categories = (IEnumerable<String>)houseCategories;
+            var houseCategories = await _houses.AllCategoriesName();
+            query.Categories = (IEnumerable<string>)houseCategories;
 
             return View(query);
         }
@@ -117,17 +117,17 @@ namespace HouseRentingSystem.Controllers
             return RedirectToAction(nameof(All));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Rent(int id)
-        {
-            return RedirectToAction(nameof(Mine));
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> Rent(int id)
+        //{
+        //    return RedirectToAction(nameof(Mine));
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> Leave(int id)
-        {
-            return RedirectToAction(nameof(Mine));
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> Leave(int id)
+        //{
+        //    return RedirectToAction(nameof(Mine));
+        //}
 
     }
 }
